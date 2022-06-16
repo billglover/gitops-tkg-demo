@@ -995,16 +995,16 @@ metadata:
   namespace: default
 spec:
   clusterName: tanzu-gitops-demo
-  nodeStartupTimeout: 20m
+  nodeStartupTimeout: 20m0s
   selector:
     matchLabels:
       node-pool: tanzu-gitops-demo-worker-pool
   unhealthyConditions:
   - status: Unknown
-    timeout: 5m
+    timeout: 5m0s
     type: Ready
   - status: "False"
-    timeout: 12m
+    timeout: 12m0s
     type: Ready
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
@@ -1014,13 +1014,13 @@ metadata:
   namespace: default
 spec:
   clusterName: tanzu-gitops-demo
-  nodeStartupTimeout: 20m
+  nodeStartupTimeout: 20m0s
   selector:
     matchLabels:
       cluster.x-k8s.io/control-plane: ""
   unhealthyConditions:
   - status: Unknown
-    timeout: 5m
+    timeout: 5m0s
     type: Ready
   - status: "False"
     timeout: 12m
