@@ -62,7 +62,7 @@ metadata:
 spec:
   template:
     spec:
-      iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
+      iamInstanceProfile: nodes.tkg.cloud.vmware.com
       instanceType: m6a.2xlarge
       sshKeyName: aws
 ---
@@ -96,7 +96,7 @@ metadata:
 spec:
   template:
     spec:
-      iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
+      iamInstanceProfile: nodes.tkg.cloud.vmware.com
       instanceType: m6a.2xlarge
       sshKeyName: aws
 ---
