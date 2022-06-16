@@ -1,27 +1,114 @@
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
-  annotations:
-    osInfo: ubuntu,20.04,amd64
-    tkg/plan: dev
-  labels:
-    tanzuKubernetesRelease: v1.22.5---vmware.1-tkg.4
-    tkg.tanzu.vmware.com/cluster-name: tkg-gitops-demo
-  name: tkg-gitops-demo
-  namespace: default
+  name: capi-cluster-demo
 spec:
   clusterNetwork:
     pods:
       cidrBlocks:
-      - 100.96.0.0/11
-    services:
-      cidrBlocks:
-      - 100.64.0.0/13
+      - 192.168.0.0/16
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     kind: KubeadmControlPlane
-    name: tkg-gitops-demo-control-plane
+    name: capi-cluster-demo-control-plane
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
     kind: AWSCluster
-    name: tkg-gitops-demo
+    name: capi-cluster-demo
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSCluster
+metadata:
+  name: capi-cluster-demo
+spec:
+  region: eu-west-1
+  sshKeyName: aws
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: KubeadmControlPlane
+metadata:
+  name: capi-cluster-demo-control-plane
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: aws
+      controllerManager:
+        extraArgs:
+          cloud-provider: aws
+    initConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cloud-provider: aws
+        name: '{{ ds.meta_data.local_hostname }}'
+    joinConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cloud-provider: aws
+        name: '{{ ds.meta_data.local_hostname }}'
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: AWSMachineTemplate
+      name: capi-cluster-demo-control-plane
+  replicas: 1
+  version: v1.22.5
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSMachineTemplate
+metadata:
+  name: capi-cluster-demo-control-plane
+spec:
+  template:
+    spec:
+      iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: m6a.2xlarge
+      sshKeyName: aws
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: capi-cluster-demo-md-0
+spec:
+  clusterName: capi-cluster-demo
+  replicas: 1
+  selector:
+    matchLabels: null
+  template:
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+          name: capi-cluster-demo-md-0
+      clusterName: capi-cluster-demo
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: AWSMachineTemplate
+        name: capi-cluster-demo-md-0
+      version: v1.22.5
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSMachineTemplate
+metadata:
+  name: capi-cluster-demo-md-0
+spec:
+  template:
+    spec:
+      iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: m6a.2xlarge
+      sshKeyName: aws
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: KubeadmConfigTemplate
+metadata:
+  name: capi-cluster-demo-md-0
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            cloud-provider: aws
+          name: '{{ ds.meta_data.local_hostname }}'
