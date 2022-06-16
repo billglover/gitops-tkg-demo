@@ -51,15 +51,15 @@ spec:
         toPort: 10100
     subnets:
     - availabilityZone: eu-west-1a
-      cidrBlock: 10.0.16.0/20
-      id: ""
+      cidrBlock: ""
+      id: subnet-04682a3eacd812e22
     - availabilityZone: eu-west-1a
-      cidrBlock: 10.0.0.0/20
-      id: ""
+      cidrBlock: ""
+      id: subnet-01daf9e17a504da62
       isPublic: true
     vpc:
-      cidrBlock: 10.0.0.0/16
-      id: ""
+      cidrBlock: ""
+      id: vpc-0389f89b2486d9c29
   region: eu-west-1
   sshKeyName: aws
 ---
@@ -170,7 +170,7 @@ metadata:
   namespace: default
 spec:
   clusterName: tanzu-gitops-demo
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels: null
   template:
@@ -1501,16 +1501,16 @@ stringData:
     AWS_NODE_AZ: eu-west-1a
     AWS_NODE_AZ_1: ""
     AWS_NODE_AZ_2: ""
-    AWS_VPC_ID: ""
-    AWS_PRIVATE_SUBNET_ID: ""
-    AWS_PUBLIC_SUBNET_ID: ""
+    AWS_VPC_ID: vpc-0389f89b2486d9c29
+    AWS_PRIVATE_SUBNET_ID: subnet-04682a3eacd812e22
+    AWS_PUBLIC_SUBNET_ID: subnet-01daf9e17a504da62
     AWS_PUBLIC_SUBNET_ID_1: ""
     AWS_PRIVATE_SUBNET_ID_1: ""
     AWS_PUBLIC_SUBNET_ID_2: ""
     AWS_PRIVATE_SUBNET_ID_2: ""
-    AWS_VPC_CIDR: 10.0.0.0/16
-    AWS_PRIVATE_NODE_CIDR: 10.0.16.0/20
-    AWS_PUBLIC_NODE_CIDR: 10.0.0.0/20
+    AWS_VPC_CIDR: ""
+    AWS_PRIVATE_NODE_CIDR: ""
+    AWS_PUBLIC_NODE_CIDR: ""
     AWS_PRIVATE_NODE_CIDR_1: 10.0.2.0/24
     AWS_PUBLIC_NODE_CIDR_1: 10.0.3.0/24
     AWS_PRIVATE_NODE_CIDR_2: 10.0.4.0/24
