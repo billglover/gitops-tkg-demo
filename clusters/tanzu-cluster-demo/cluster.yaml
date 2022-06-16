@@ -51,14 +51,26 @@ spec:
         toPort: 10100
     subnets:
     - availabilityZone: eu-west-1a
-      cidrBlock: ""
+      cidrBlock: 10.0.128.0/20
       id: subnet-04682a3eacd812e22
+      isPublic: false
+      routeTableId: rtb-0a4ff7425a59214d0
+      tags:
+        Name: tkg-gitops-subnet-private1-eu-west-1a
+        kubernetes.io/cluster/tanzu-gitops-demo: shared
+        kubernetes.io/role/internal-elb: '1'
     - availabilityZone: eu-west-1a
-      cidrBlock: ""
+      cidrBlock: 10.0.0.0/20
       id: subnet-01daf9e17a504da62
       isPublic: true
+      natGatewayId: nat-0126272377b930e0f
+      routeTableId: rtb-082b25aa229718579
+      tags:
+        Name: tkg-gitops-subnet-public1-eu-west-1a
+        kubernetes.io/cluster/tanzu-gitops-demo: shared
+        kubernetes.io/role/elb: '1'
     vpc:
-      cidrBlock: ""
+      cidrBlock: 10.0.0.0/16
       id: vpc-0389f89b2486d9c29
   region: eu-west-1
   sshKeyName: aws
@@ -1023,7 +1035,7 @@ spec:
     timeout: 5m0s
     type: Ready
   - status: "False"
-    timeout: 12m
+    timeout: 12m0s
     type: Ready
 ---
 apiVersion: addons.cluster.x-k8s.io/v1beta1
