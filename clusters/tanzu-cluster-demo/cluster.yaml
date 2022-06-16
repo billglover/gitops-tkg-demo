@@ -170,7 +170,7 @@ metadata:
   namespace: default
 spec:
   clusterName: tanzu-gitops-demo
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels: null
   template:
