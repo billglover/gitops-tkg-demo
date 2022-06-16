@@ -6,8 +6,8 @@ metadata:
     tkg/plan: dev
   labels:
     tanzuKubernetesRelease: v1.21.8---vmware.1-tkg.5
-    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo
+    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade
   namespace: default
 spec:
   clusterNetwork:
@@ -20,16 +20,16 @@ spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     kind: KubeadmControlPlane
-    name: tanzu-gitops-demo-control-plane
+    name: tanzu-gitops-demo-upgrade-control-plane
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
     kind: AWSCluster
-    name: tanzu-gitops-demo
+    name: tanzu-gitops-demo-upgrade
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: AWSCluster
 metadata:
-  name: tanzu-gitops-demo
+  name: tanzu-gitops-demo-upgrade
   namespace: default
 spec:
   bastion:
@@ -57,7 +57,7 @@ spec:
       routeTableId: rtb-0a4ff7425a59214d0
       tags:
         Name: tkg-gitops-subnet-private1-eu-west-1a
-        kubernetes.io/cluster/tanzu-gitops-demo: shared
+        kubernetes.io/cluster/tanzu-gitops-demo-upgrade: shared
         kubernetes.io/role/internal-elb: '1'
     - availabilityZone: eu-west-1a
       cidrBlock: 10.0.0.0/20
@@ -67,7 +67,7 @@ spec:
       routeTableId: rtb-082b25aa229718579
       tags:
         Name: tkg-gitops-subnet-public1-eu-west-1a
-        kubernetes.io/cluster/tanzu-gitops-demo: shared
+        kubernetes.io/cluster/tanzu-gitops-demo-upgrade: shared
         kubernetes.io/role/elb: '1'
     vpc:
       cidrBlock: 10.0.0.0/16
@@ -78,7 +78,7 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 kind: KubeadmControlPlane
 metadata:
-  name: tanzu-gitops-demo-control-plane
+  name: tanzu-gitops-demo-upgrade-control-plane
   namespace: default
 spec:
   kubeadmConfigSpec:
@@ -123,14 +123,14 @@ spec:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: AWSMachineTemplate
-      name: tanzu-gitops-demo-control-plane
+      name: tanzu-gitops-demo-upgrade-control-plane
   replicas: 1
   version: v1.21.8+vmware.1
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: AWSMachineTemplate
 metadata:
-  name: tanzu-gitops-demo-control-plane
+  name: tanzu-gitops-demo-upgrade-control-plane
   namespace: default
 spec:
   template:
@@ -146,7 +146,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: AWSMachineTemplate
 metadata:
-  name: tanzu-gitops-demo-md-0
+  name: tanzu-gitops-demo-upgrade-md-0
   namespace: default
 spec:
   template:
@@ -162,7 +162,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
-  name: tanzu-gitops-demo-md-0
+  name: tanzu-gitops-demo-upgrade-md-0
   namespace: default
 spec:
   template:
@@ -178,29 +178,29 @@ spec:
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
-  name: tanzu-gitops-demo-md-0
+  name: tanzu-gitops-demo-upgrade-md-0
   namespace: default
 spec:
-  clusterName: tanzu-gitops-demo
+  clusterName: tanzu-gitops-demo-upgrade
   replicas: 2
   selector:
     matchLabels: null
   template:
     metadata:
       labels:
-        node-pool: tanzu-gitops-demo-worker-pool
+        node-pool: tanzu-gitops-demo-upgrade-worker-pool
     spec:
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: KubeadmConfigTemplate
-          name: tanzu-gitops-demo-md-0
-      clusterName: tanzu-gitops-demo
+          name: tanzu-gitops-demo-upgrade-md-0
+      clusterName: tanzu-gitops-demo-upgrade
       failureDomain: eu-west-1a
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: AWSMachineTemplate
-        name: tanzu-gitops-demo-md-0
+        name: tanzu-gitops-demo-upgrade-md-0
       version: v1.21.8+vmware.1
 ---
 apiVersion: v1
@@ -211,8 +211,8 @@ metadata:
   labels:
     clusterctl.cluster.x-k8s.io/move: ""
     tkg.tanzu.vmware.com/addon-name: antrea
-    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-antrea-addon
+    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-antrea-addon
   namespace: default
 stringData:
   values.yaml: |
@@ -249,8 +249,8 @@ metadata:
   labels:
     clusterctl.cluster.x-k8s.io/move: ""
     tkg.tanzu.vmware.com/addon-name: kapp-controller
-    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-kapp-controller-addon
+    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-kapp-controller-addon
   namespace: default
 stringData:
   values.yaml: |
@@ -291,7 +291,7 @@ kind: Secret
 metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: metadata/tkg
-  name: tanzu-gitops-demo-tkg-metadata-namespace-role
+  name: tanzu-gitops-demo-upgrade-tkg-metadata-namespace-role
   namespace: default
 stringData:
   value: |
@@ -344,7 +344,7 @@ kind: Secret
 metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: metadata/tkg
-  name: tanzu-gitops-demo-tkg-metadata-configmap
+  name: tanzu-gitops-demo-upgrade-tkg-metadata-configmap
   namespace: default
 stringData:
   value: |
@@ -358,7 +358,7 @@ stringData:
     data:
       metadata.yaml: |
         cluster:
-          name: tanzu-gitops-demo
+          name: tanzu-gitops-demo-upgrade
           type: workload
           plan: dev
           kubernetesProvider: VMware Tanzu Kubernetes Grid
@@ -375,7 +375,7 @@ kind: Secret
 metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: metadata/tkg
-  name: tanzu-gitops-demo-tkg-metadata-bom-configmap
+  name: tanzu-gitops-demo-upgrade-tkg-metadata-bom-configmap
   namespace: default
 stringData:
   value: |
@@ -852,20 +852,20 @@ metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: metadata/tkg
   labels:
-    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-tkg-metadata
+    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-tkg-metadata
   namespace: default
 spec:
   clusterSelector:
     matchLabels:
-      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
+      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
   resources:
   - kind: Secret
-    name: tanzu-gitops-demo-tkg-metadata-namespace-role
+    name: tanzu-gitops-demo-upgrade-tkg-metadata-namespace-role
   - kind: Secret
-    name: tanzu-gitops-demo-tkg-metadata-configmap
+    name: tanzu-gitops-demo-upgrade-tkg-metadata-configmap
   - kind: Secret
-    name: tanzu-gitops-demo-tkg-metadata-bom-configmap
+    name: tanzu-gitops-demo-upgrade-tkg-metadata-bom-configmap
   strategy: ApplyOnce
 ---
 apiVersion: v1
@@ -876,8 +876,8 @@ metadata:
   labels:
     clusterctl.cluster.x-k8s.io/move: ""
     tkg.tanzu.vmware.com/addon-name: metrics-server
-    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-metrics-server-addon
+    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-metrics-server-addon
   namespace: default
 stringData:
   values.yaml: |
@@ -905,16 +905,16 @@ metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: addons-management/core-package-repo
   labels:
-    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-core-package-repository
+    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-core-package-repository
   namespace: default
 spec:
   clusterSelector:
     matchLabels:
-      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
+      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
   resources:
   - kind: Secret
-    name: tanzu-gitops-demo-core-package-repository-crs
+    name: tanzu-gitops-demo-upgrade-core-package-repository-crs
   strategy: ApplyOnce
 ---
 apiVersion: v1
@@ -922,7 +922,7 @@ kind: Secret
 metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: addons-management/core-package-repo
-  name: tanzu-gitops-demo-core-package-repository-crs
+  name: tanzu-gitops-demo-upgrade-core-package-repository-crs
   namespace: default
 stringData:
   value: |
@@ -946,8 +946,8 @@ metadata:
     tkg.tanzu.vmware.com/addon-type: addons-management/secretgen-controller
   labels:
     tkg.tanzu.vmware.com/addon-name: secretgen-controller
-    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-secretgen-controller-addon
+    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-secretgen-controller-addon
   namespace: default
 stringData:
   values.yaml: |
@@ -965,16 +965,16 @@ metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: addons-management/standard-package-repo
   labels:
-    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-standard-package-repository
+    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-standard-package-repository
   namespace: default
 spec:
   clusterSelector:
     matchLabels:
-      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
+      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
   resources:
   - kind: Secret
-    name: tanzu-gitops-demo-standard-package-repository-crs
+    name: tanzu-gitops-demo-upgrade-standard-package-repository-crs
   strategy: ApplyOnce
 ---
 apiVersion: v1
@@ -982,7 +982,7 @@ kind: Secret
 metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: addons-management/standard-package-repo
-  name: tanzu-gitops-demo-standard-package-repository-crs
+  name: tanzu-gitops-demo-upgrade-standard-package-repository-crs
   namespace: default
 stringData:
   value: |
@@ -1003,14 +1003,14 @@ type: addons.cluster.x-k8s.io/resource-set
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineHealthCheck
 metadata:
-  name: tanzu-gitops-demo
+  name: tanzu-gitops-demo-upgrade
   namespace: default
 spec:
-  clusterName: tanzu-gitops-demo
+  clusterName: tanzu-gitops-demo-upgrade
   nodeStartupTimeout: 20m0s
   selector:
     matchLabels:
-      node-pool: tanzu-gitops-demo-worker-pool
+      node-pool: tanzu-gitops-demo-upgrade-worker-pool
   unhealthyConditions:
   - status: Unknown
     timeout: 5m0s
@@ -1022,10 +1022,10 @@ spec:
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineHealthCheck
 metadata:
-  name: tanzu-gitops-demo-control-plane
+  name: tanzu-gitops-demo-upgrade-control-plane
   namespace: default
 spec:
-  clusterName: tanzu-gitops-demo
+  clusterName: tanzu-gitops-demo-upgrade
   nodeStartupTimeout: 20m0s
   selector:
     matchLabels:
@@ -1042,22 +1042,22 @@ apiVersion: addons.cluster.x-k8s.io/v1beta1
 kind: ClusterResourceSet
 metadata:
   labels:
-    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-default-storage-class
+    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-default-storage-class
   namespace: default
 spec:
   clusterSelector:
     matchLabels:
-      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
+      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
   resources:
   - kind: Secret
-    name: tanzu-gitops-demo-default-storage-class
+    name: tanzu-gitops-demo-upgrade-default-storage-class
   strategy: ApplyOnce
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: tanzu-gitops-demo-default-storage-class
+  name: tanzu-gitops-demo-upgrade-default-storage-class
   namespace: default
 stringData:
   value: |
@@ -1077,16 +1077,16 @@ metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: capabilities/capabilities-controller
   labels:
-    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-capabilities
+    cluster.x-k8s.io/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-capabilities
   namespace: default
 spec:
   clusterSelector:
     matchLabels:
-      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
+      tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
   resources:
   - kind: Secret
-    name: tanzu-gitops-demo-capabilities
+    name: tanzu-gitops-demo-upgrade-capabilities
   strategy: ApplyOnce
 ---
 apiVersion: v1
@@ -1094,7 +1094,7 @@ kind: Secret
 metadata:
   annotations:
     tkg.tanzu.vmware.com/addon-type: capabilities/capabilities-controller
-  name: tanzu-gitops-demo-capabilities
+  name: tanzu-gitops-demo-upgrade-capabilities
   namespace: default
 stringData:
   value: |
@@ -1496,12 +1496,12 @@ kind: Secret
 metadata:
   labels:
     clusterctl.cluster.x-k8s.io/move: ""
-    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo
-  name: tanzu-gitops-demo-config-values
+    tkg.tanzu.vmware.com/cluster-name: tanzu-gitops-demo-upgrade
+  name: tanzu-gitops-demo-upgrade-config-values
   namespace: default
 stringData:
   value: |
-    CLUSTER_NAME: tanzu-gitops-demo
+    CLUSTER_NAME: tanzu-gitops-demo-upgrade
     CLUSTER_PLAN: dev
     NAMESPACE: default
     INFRASTRUCTURE_PROVIDER: aws
