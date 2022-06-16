@@ -1,0 +1,27 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  annotations:
+    osInfo: ubuntu,20.04,amd64
+    tkg/plan: dev
+  labels:
+    tanzuKubernetesRelease: v1.22.5---vmware.1-tkg.4
+    tkg.tanzu.vmware.com/cluster-name: tkg-gitops-demo
+  name: tkg-gitops-demo
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 100.96.0.0/11
+    services:
+      cidrBlocks:
+      - 100.64.0.0/13
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    kind: KubeadmControlPlane
+    name: tkg-gitops-demo-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    kind: AWSCluster
+    name: tkg-gitops-demo
