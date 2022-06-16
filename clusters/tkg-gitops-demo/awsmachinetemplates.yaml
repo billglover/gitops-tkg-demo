@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSMachineTemplate
+metadata:
+  name: tkg-gitops-demo-control-plane
+  namespace: default
+spec:
+  template:
+    spec:
+      ami:
+        id: ami-0a87130457dba08d7
+      iamInstanceProfile: control-plane.tkg.cloud.vmware.com
+      instanceType: m6a.2xlarge
+      rootVolume:
+        size: 80
+      sshKeyName: aws
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSMachineTemplate
+metadata:
+  name: tkg-gitops-demo-md-0
+  namespace: default
+spec:
+  template:
+    spec:
+      ami:
+        id: ami-0a87130457dba08d7
+      iamInstanceProfile: nodes.tkg.cloud.vmware.com
+      instanceType: m6a.2xlarge
+      rootVolume:
+        size: 80
+      sshKeyName: aws
